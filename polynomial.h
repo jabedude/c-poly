@@ -9,9 +9,9 @@ typedef struct term {
 } polynomial;
 
 /* Function prototypes */
-polynomial *init_list(int coeff, unsigned int esp);
-void list_destroy(polynomial *list);
-void print_list(const polynomial *list);
+polynomial *term_create(int coeff, unsigned int esp);
+void poly_destroy(polynomial *list);
+void poly_print(const polynomial *list);
 char *poly_to_string(const polynomial *p);
 
 void append(polynomial *list, int data);

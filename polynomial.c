@@ -3,7 +3,7 @@
 
 #include "polynomial.h"
 
-polynomial *init_list(int coeff, unsigned int exp)
+polynomial *term_create(int coeff, unsigned int exp)
 {
     polynomial *head = malloc(sizeof(polynomial));
     
@@ -16,7 +16,7 @@ polynomial *init_list(int coeff, unsigned int exp)
     return head;
 }
 
-void list_destroy(polynomial *list)
+void poly_destroy(polynomial *list)
 {
     while (list) {
         polynomial *tmp = list->next;
@@ -25,7 +25,7 @@ void list_destroy(polynomial *list)
     }
 }
 
-void print_list(const polynomial *list)
+void poly_print(const polynomial *list)
 {
     if (!list) {
         printf("List empty\n");
@@ -42,8 +42,10 @@ void print_list(const polynomial *list)
         printf(" ");
     }
     
-    print_list(list->next);
+    poly_print(list->next);
 }
+
+//char *poly_to_string
 
 void append(polynomial *list, int data)
 {
