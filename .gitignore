@@ -1,9 +1,7 @@
 polynomial
-linked_lists.h
-test*
 *.swp
 *.o
 a.out
-test*
+test
 *.su
 .gdb_history
