@@ -1,6 +1,8 @@
 #ifndef POLY_HEADER
 #define POLY_HEADER
 
+#include <stdbool.h>
+
 #define ADDITION 1
 #define SUBTRACTION 2
 
@@ -19,6 +21,8 @@ char *poly_to_string(const polynomial *p);
 polynomial *poly_add(const polynomial *a, const polynomial *b);
 polynomial *poly_sub(const polynomial *a, const polynomial *b);
 void poly_iterate(polynomial *p, void (*transform)(struct term *));
+bool poly_equal(const polynomial *a, const polynomial *b);
+
 
 void append(polynomial *list, int data);
 void delete_from_list(polynomial **list, int position);

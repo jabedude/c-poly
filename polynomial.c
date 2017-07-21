@@ -52,7 +52,7 @@ void poly_print(const polynomial *list) /* TODO: just call poly_to_string */
 
         printf(" ");
     }
-    
+
     if (list->next)
         poly_print(list->next);
     else {
@@ -93,86 +93,6 @@ char *poly_to_string(const polynomial *p) /* TODO: exact number of bytes needed 
     }
 */
     return s;
-}
-
-static polynomial *_poly_op(const polynomial *a, const polynomial *b, int op)
-{
-    polynomial *a_head = (polynomial *) a;
-    polynomial *b_head = (polynomial *) b;
-    polynomial *ret = term_create(0,0U);
-    polynomial *head = ret;
-
-    while (a_head->next && b_head->next) {
-
-        if (a_head->exp > b_head->exp) { /* If a is greater than b */
-            //ret->coeff = a_head->coeff;
-            ret->coeff = (op == ADDITION) ? (a_head->coeff) : -(a_head->coeff);
-            ret->exp = a_head->exp;
-            a_head = a_head->next;
-        } else if (b_head->exp > a_head->exp) { /* If b is greater than a */
-            //ret->coeff = b_head->coeff;
-            ret->coeff = (op == ADDITION) ? (b_head->coeff) : -(b_head->coeff);
-            ret->exp = b_head->exp;
-            b_head = b_head->next;
-        } else { /* Exponents are the same */
-            ret->exp = a_head->exp;
-            //ret->coeff = a_head->coeff + b_head->coeff;
-            ret->coeff = (op == ADDITION) ? (a_head->coeff + b_head->coeff) : (a_head->coeff - b_head->coeff);
-            a_head = a_head->next;
-            b_head = b_head->next;
-        }
-
-        ret->next = term_create(0, 0U);
-        ret = ret->next;
-    }
-
-    if (a_head->coeff && b_head->coeff) {
-            ret->exp = a_head->exp;
-            //ret->coeff = a_head->coeff + b_head->coeff;
-            ret->coeff = (op == ADDITION) ? (a_head->coeff + b_head->coeff) : (a_head->coeff - b_head->coeff);
-            a_head = a_head->next;
-            b_head = b_head->next;
-
-            //ret->next = term_create(0, 0U);
-            //ret = ret->next;
-            if (!(ret->coeff) && !(ret->exp))
-                _poly_rm_end(head);
-
-            return head;
-    }
-
-    while (a_head->next || b_head->next) {
-        if (a_head->next) {
-            ret->coeff = a_head->coeff;
-            ret->exp = a_head->exp;
-            a_head = a_head->next;
-        }
-        if (b_head->exp > a_head->exp) {
-            ret->coeff = b_head->coeff;
-            ret->exp = b_head->exp;
-            b_head = b_head->next;
-        }
-
-        ret->next = term_create(0, 0U);
-        ret = ret->next;
-    }
-    
-    if (!(ret->coeff) && !(ret->exp))
-        _poly_rm_end(head);
-    
-    return head;
-}
-
-static void _poly_rm_end(polynomial *p)
-{
-    polynomial *tmp = p, *t;
-
-    while (tmp->next) {
-        t = tmp;
-        tmp = tmp->next;
-    }
-    free(t->next);
-    t->next = NULL;
 }
 
 polynomial *poly_add(const polynomial *a, const polynomial *b)
@@ -242,6 +162,11 @@ void poly_iterate(polynomial *p, void (*transform)(struct term *))
         (*transform)(p);
         p = p->next;
     }
+}
+
+bool poly_equal(const polynomial *a, const polynomial *b)
+{
+    return true;
 }
 
 polynomial *poly_sub(const polynomial *a, const polynomial *b)
@@ -320,4 +245,84 @@ static int term_count(const polynomial *eqn)
 static void _poly_neg(polynomial *p)
 {
     p->coeff = -(p->coeff);
+}
+
+static polynomial *_poly_op(const polynomial *a, const polynomial *b, int op)
+{
+    polynomial *a_head = (polynomial *) a;
+    polynomial *b_head = (polynomial *) b;
+    polynomial *ret = term_create(0,0U);
+    polynomial *head = ret;
+
+    while (a_head->next && b_head->next) {
+
+        if (a_head->exp > b_head->exp) { /* If a is greater than b */
+            //ret->coeff = a_head->coeff;
+            ret->coeff = (op == ADDITION) ? (a_head->coeff) : -(a_head->coeff);
+            ret->exp = a_head->exp;
+            a_head = a_head->next;
+        } else if (b_head->exp > a_head->exp) { /* If b is greater than a */
+            //ret->coeff = b_head->coeff;
+            ret->coeff = (op == ADDITION) ? (b_head->coeff) : -(b_head->coeff);
+            ret->exp = b_head->exp;
+            b_head = b_head->next;
+        } else { /* Exponents are the same */
+            ret->exp = a_head->exp;
+            //ret->coeff = a_head->coeff + b_head->coeff;
+            ret->coeff = (op == ADDITION) ? (a_head->coeff + b_head->coeff) : (a_head->coeff - b_head->coeff);
+            a_head = a_head->next;
+            b_head = b_head->next;
+        }
+
+        ret->next = term_create(0, 0U);
+        ret = ret->next;
+    }
+
+    if (a_head->coeff && b_head->coeff) {
+            ret->exp = a_head->exp;
+            //ret->coeff = a_head->coeff + b_head->coeff;
+            ret->coeff = (op == ADDITION) ? (a_head->coeff + b_head->coeff) : (a_head->coeff - b_head->coeff);
+            a_head = a_head->next;
+            b_head = b_head->next;
+
+            //ret->next = term_create(0, 0U);
+            //ret = ret->next;
+            if (!(ret->coeff) && !(ret->exp))
+                _poly_rm_end(head);
+
+            return head;
+    }
+
+    while (a_head->next || b_head->next) {
+        if (a_head->next) {
+            ret->coeff = a_head->coeff;
+            ret->exp = a_head->exp;
+            a_head = a_head->next;
+        }
+        if (b_head->exp > a_head->exp) {
+            ret->coeff = b_head->coeff;
+            ret->exp = b_head->exp;
+            b_head = b_head->next;
+        }
+
+        ret->next = term_create(0, 0U);
+        ret = ret->next;
+    }
+
+    if (!(ret->coeff) && !(ret->exp))
+        _poly_rm_end(head);
+
+    return head;
+}
+
+static void _poly_rm_end(polynomial *p)
+{
+    polynomial *tmp = p, *t;
+
+    while (tmp->next) {
+        t = tmp;
+        tmp = tmp->next;
+    }
+    free(t->next);
+    t->next = NULL;
 }
