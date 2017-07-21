@@ -4,10 +4,10 @@ CFLAGS=-Wall -Wextra -Wpedantic -Wwrite-strings -Wstack-usage=1024 -Wfloat-equal
 all: polynomial test
 
 test: test.c
-	$(CC) $(CFLAGS) $< polynomial.o -o $@
+	$(CC) $< polynomial.o -o $@ $(CFLAGS)
 
 polynomial: polynomial.c
-	$(CC) $(CFLAGS) -D_GNU_SOURCE $< -c -o polynomial.o
+	$(CC) -D_GNU_SOURCE $< -c -o polynomial.o $(CFLAGS)
 
 debug: CFLAGS += -DDEBUG -g -fstack-usage
 debug: all
