@@ -99,11 +99,13 @@ static polynomial *_poly_op(const polynomial *a, const polynomial *b, int op)
     while (a_head->next && b_head->next) {
 
         if (a_head->exp > b_head->exp) { /* If a is greater than b */
-            ret->coeff = a_head->coeff;
+            //ret->coeff = a_head->coeff;
+            ret->coeff = (op == ADDITION) ? (a_head->coeff) : -(a_head->coeff);
             ret->exp = a_head->exp;
             a_head = a_head->next;
         } else if (b_head->exp > a_head->exp) { /* If b is greater than a */
-            ret->coeff = b_head->coeff;
+            //ret->coeff = b_head->coeff;
+            ret->coeff = (op == ADDITION) ? (b_head->coeff) : -(b_head->coeff);
             ret->exp = b_head->exp;
             b_head = b_head->next;
         } else { /* Exponents are the same */
@@ -221,12 +223,15 @@ void poly_iterate(polynomial *p, void (*transform)(struct term *))
 
 polynomial *poly_sub(const polynomial *a, const polynomial *b)
 {
+    return _poly_op(a, b, SUBTRACTION);
+/*
     polynomial *tmp = (polynomial *) b;
     poly_print(tmp);
     poly_iterate(tmp, _poly_neg);
     printf("NEG\n");
     poly_print(tmp);
     return poly_add(a, tmp);
+*/
 }
 
 void append(polynomial *list, int data)
