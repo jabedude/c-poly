@@ -103,18 +103,11 @@ void poly_iterate(polynomial *p, void (*transform)(struct term *))
 
 double poly_eval(const polynomial *a, double x)
 {
-    double ret = 0, d;
+    double ret = 0;
     polynomial *tmp = (polynomial *) a;
 
     while (tmp) {
-        d = x;
-        if (tmp->exp) {
-            d = pow(x, tmp->exp);
-            d *= tmp->coeff;
-            ret += d;
-        } else {
-            ret += tmp->coeff;
-        }
+        ret += pow(x, tmp->exp) * tmp->coeff;
         tmp = tmp->next;
     }
 
