@@ -6,6 +6,8 @@
 
 /* Static prototypes */
 static int term_count(const polynomial *eqn);
+static polynomial *_poly_op(const polynomial *a, const polynomial *b, int op);
+static void _poly_neg(polynomial *p);
 
 polynomial *term_create(int coeff, unsigned int exp)
 {
@@ -87,7 +89,7 @@ char *poly_to_string(const polynomial *p) /* TODO: exact number of bytes needed 
     return s;
 }
 
-polynomial *poly_add(const polynomial *a, const polynomial *b)
+static polynomial *_poly_op(const polynomial *a, const polynomial *b, int op)
 {
     polynomial *a_head = (polynomial *) a;
     polynomial *b_head = (polynomial *) b;
@@ -106,7 +108,8 @@ polynomial *poly_add(const polynomial *a, const polynomial *b)
             b_head = b_head->next;
         } else { /* Exponents are the same */
             ret->exp = a_head->exp;
-            ret->coeff = a_head->coeff + b_head->coeff;
+            //ret->coeff = a_head->coeff + b_head->coeff;
+            ret->coeff = (op == ADDITION) ? (a_head->coeff + b_head->coeff) : (a_head->coeff - b_head->coeff);
             a_head = a_head->next;
             b_head = b_head->next;
         }
@@ -117,7 +120,8 @@ polynomial *poly_add(const polynomial *a, const polynomial *b)
 
     if (a_head->coeff && b_head->coeff) {
             ret->exp = a_head->exp;
-            ret->coeff = a_head->coeff + b_head->coeff;
+            //ret->coeff = a_head->coeff + b_head->coeff;
+            ret->coeff = (op == ADDITION) ? (a_head->coeff + b_head->coeff) : (a_head->coeff - b_head->coeff);
             a_head = a_head->next;
             b_head = b_head->next;
 
@@ -144,6 +148,85 @@ polynomial *poly_add(const polynomial *a, const polynomial *b)
     }
 
     return head;
+}
+
+polynomial *poly_add(const polynomial *a, const polynomial *b)
+{
+    polynomial *a_head = (polynomial *) a;
+    polynomial *b_head = (polynomial *) b;
+    polynomial *ret = term_create(0,0U);
+    polynomial *head = ret;
+
+    while (a_head->next && b_head->next) {
+
+        if (a_head->exp > b_head->exp) { /* If a is greater than b */
+            ret->coeff = a_head->coeff;
+            ret->exp = a_head->exp;
+            a_head = a_head->next;
+        } else if (b_head->exp > a_head->exp) { /* If b is greater than a */
+            ret->coeff = b_head->coeff;
+            ret->exp = b_head->exp;
+            b_head = b_head->next;
+        } else { /* Exponents are the same */
+            ret->exp = a_head->exp;
+            ret->coeff = a_head->coeff + b_head->coeff;
+            //ret->coeff = (op == ADDITION) ? (a_head->coeff + b_head->coeff) : (a_head->coeff - b_head->coeff);
+            a_head = a_head->next;
+            b_head = b_head->next;
+        }
+
+        ret->next = term_create(0, 0U);
+        ret = ret->next;
+    }
+
+    if (a_head->coeff && b_head->coeff) {
+            ret->exp = a_head->exp;
+            ret->coeff = a_head->coeff + b_head->coeff;
+            //ret->coeff = (op == ADDITION) ? (a_head->coeff + b_head->coeff) : (a_head->coeff - b_head->coeff);
+            a_head = a_head->next;
+            b_head = b_head->next;
+
+            ret->next = term_create(0, 0U);
+            ret = ret->next;
+
+            return head;
+    }
+
+    while (a_head->next || b_head->next) {
+        if (a_head->next) {
+            ret->coeff = a_head->coeff;
+            ret->exp = a_head->exp;
+            a_head = a_head->next;
+        }
+        if (b_head->exp > a_head->exp) {
+            ret->coeff = b_head->coeff;
+            ret->exp = b_head->exp;
+            b_head = b_head->next;
+        }
+
+        ret->next = term_create(0, 0U);
+        ret = ret->next;
+    }
+
+    return head;
+}
+
+void poly_iterate(polynomial *p, void (*transform)(struct term *))
+{
+    while (p) {
+        (*transform)(p);
+        p = p->next;
+    }
+}
+
+polynomial *poly_sub(const polynomial *a, const polynomial *b)
+{
+    polynomial *tmp = (polynomial *) b;
+    poly_print(tmp);
+    poly_iterate(tmp, _poly_neg);
+    printf("NEG\n");
+    poly_print(tmp);
+    return poly_add(a, tmp);
 }
 
 void append(polynomial *list, int data)
@@ -204,4 +287,9 @@ static int term_count(const polynomial *eqn)
     }
 
     return c;
+}
+
+static void _poly_neg(polynomial *p)
+{
+    p->coeff = -(p->coeff);
 }
