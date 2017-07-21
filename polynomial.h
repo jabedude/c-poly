@@ -24,6 +24,4 @@ bool poly_equal(const polynomial *a, const polynomial *b);
 double poly_eval(const polynomial *a, double x);
 void poly_iterate(polynomial *p, void (*transform)(struct term *));
 
-void delete_from_list(polynomial **list, int position);
-
 #endif

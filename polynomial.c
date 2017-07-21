@@ -131,39 +131,6 @@ polynomial *poly_sub(const polynomial *a, const polynomial *b)
     return _poly_op(a, b, SUBTRACTION);
 }
 
-void delete_from_list(polynomial **list, int position)
-{
-    int c = 0;
-    polynomial *ptr = *list, *tmp;
-
-    if (*list == NULL) {
-        printf("Error, list empty\n");
-        return;
-    }
-
-    /* Deletion from begining */
-    if (position == 0) {
-        *list = (*list)->next;
-        free(ptr);
-        return;
-    } else {
-        while ((ptr->next != NULL) && (c < position)) {
-            c++;
-            tmp = ptr;
-            ptr = ptr->next;
-        }
-        if (!ptr) {
-            printf("Index error\n");
-            return;
-        } else {
-            tmp->next = ptr->next;
-            free(ptr);
-            return;
-        }
-    }
-
-}
-
 static int term_count(const polynomial *eqn)
 {
     int c = 0;
