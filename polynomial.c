@@ -8,6 +8,7 @@
 static int term_count(const polynomial *eqn);
 static polynomial *_poly_op(const polynomial *a, const polynomial *b, int op);
 static void _poly_neg(polynomial *p);
+static void _poly_rm_end(polynomial *p);
 
 polynomial *term_create(int coeff, unsigned int exp)
 {
@@ -33,7 +34,7 @@ void poly_destroy(polynomial *list)
 
 void poly_print(const polynomial *list) /* TODO: just call poly_to_string */
 {
-    if (!list) {
+    if (list == NULL) {
         printf("List empty\n");
         return;
     }
@@ -51,8 +52,13 @@ void poly_print(const polynomial *list) /* TODO: just call poly_to_string */
 
         printf(" ");
     }
-
-    poly_print(list->next);
+    
+    if (list->next)
+        poly_print(list->next);
+    else {
+        putchar('\n');
+        return;
+    }
 }
 
 char *poly_to_string(const polynomial *p) /* TODO: exact number of bytes needed */
@@ -127,8 +133,10 @@ static polynomial *_poly_op(const polynomial *a, const polynomial *b, int op)
             a_head = a_head->next;
             b_head = b_head->next;
 
-            ret->next = term_create(0, 0U);
-            ret = ret->next;
+            //ret->next = term_create(0, 0U);
+            //ret = ret->next;
+            if (!(ret->coeff) && !(ret->exp))
+                _poly_rm_end(head);
 
             return head;
     }
@@ -148,8 +156,23 @@ static polynomial *_poly_op(const polynomial *a, const polynomial *b, int op)
         ret->next = term_create(0, 0U);
         ret = ret->next;
     }
-
+    
+    if (!(ret->coeff) && !(ret->exp))
+        _poly_rm_end(head);
+    
     return head;
+}
+
+static void _poly_rm_end(polynomial *p)
+{
+    polynomial *tmp = p, *t;
+
+    while (tmp->next) {
+        t = tmp;
+        tmp = tmp->next;
+    }
+    free(t->next);
+    t->next = NULL;
 }
 
 polynomial *poly_add(const polynomial *a, const polynomial *b)
