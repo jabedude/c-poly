@@ -3,5 +3,6 @@ polynomial
 *.o
 a.out
 test
+test.c
 *.su
 .gdb_history
