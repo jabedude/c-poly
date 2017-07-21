@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 
 #include "polynomial.h"
 
@@ -167,7 +168,20 @@ void poly_iterate(polynomial *p, void (*transform)(struct term *))
 
 double poly_eval(const polynomial *a, double x)
 {
-    double ret = 0;
+    double ret = 0, d;
+    polynomial *tmp = (polynomial *) a;
+
+    while (tmp) {
+        d = x;
+        if (tmp->exp) {
+            d = pow(x, tmp->exp);
+            d *= tmp->coeff;
+            ret += d;
+        } else {
+            ret += tmp->coeff;
+        }
+        tmp = tmp->next;
+    }
 
     return ret;
 }
