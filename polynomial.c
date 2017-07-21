@@ -131,8 +131,11 @@ polynomial *poly_sub(const polynomial *a, const polynomial *b)
     return _poly_op(a, b, SUBTRACTION);
 }
 
+/* Static functions */
+
 static int term_count(const polynomial *eqn)
 {
+    /* Returns the number of terms in eqn */
     int c = 0;
     polynomial *tmp = (polynomial *) eqn;
 
@@ -146,6 +149,7 @@ static int term_count(const polynomial *eqn)
 
 static polynomial *_poly_op(const polynomial *a, const polynomial *b, int op)
 {
+    /* Performs the operation op on a and b */
     polynomial *a_head = (polynomial *) a;
     polynomial *b_head = (polynomial *) b;
     polynomial *ret = term_create(0,0U);
@@ -200,6 +204,7 @@ static polynomial *_poly_op(const polynomial *a, const polynomial *b, int op)
         ret = ret->next;
     }
 
+    /* Remove unneeded node from end of list */
     if (!(ret->coeff) && !(ret->exp))
         _poly_rm_end(head);
 
@@ -208,6 +213,7 @@ static polynomial *_poly_op(const polynomial *a, const polynomial *b, int op)
 
 static void _poly_rm_end(polynomial *p)
 {
+    /* Removes last term from p */
     polynomial *tmp = p, *t;
 
     while (tmp->next) {
