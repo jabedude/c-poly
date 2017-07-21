@@ -29,7 +29,7 @@ void poly_destroy(polynomial *list)
     }
 }
 
-void poly_print(const polynomial *list)
+void poly_print(const polynomial *list) /* TODO: just call poly_to_string */
 {
     if (!list) {
         printf("List empty\n");
@@ -89,8 +89,6 @@ char *poly_to_string(const polynomial *p) /* TODO: exact number of bytes needed 
 
 polynomial *poly_add(const polynomial *a, const polynomial *b)
 {
-    int a_len = term_count(a);
-    int b_len = term_count(b);
     polynomial *a_head = (polynomial *) a;
     polynomial *b_head = (polynomial *) b;
     polynomial *ret = term_create(0,0U);
@@ -115,6 +113,18 @@ polynomial *poly_add(const polynomial *a, const polynomial *b)
 
         ret->next = term_create(0, 0U);
         ret = ret->next;
+    }
+
+    if (a_head->coeff && b_head->coeff) {
+            ret->exp = a_head->exp;
+            ret->coeff = a_head->coeff + b_head->coeff;
+            a_head = a_head->next;
+            b_head = b_head->next;
+
+            ret->next = term_create(0, 0U);
+            ret = ret->next;
+
+            return head;
     }
 
     while (a_head->next || b_head->next) {
