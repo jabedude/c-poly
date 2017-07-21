@@ -131,20 +131,6 @@ polynomial *poly_sub(const polynomial *a, const polynomial *b)
     return _poly_op(a, b, SUBTRACTION);
 }
 
-void append(polynomial *list, int data)
-{
-    polynomial *ptr = list;
-
-    while (ptr->next != NULL)
-        ptr = ptr->next;
-
-    polynomial *new = malloc(sizeof(polynomial));
-    new->coeff = data;
-    new->next = NULL;
-
-    ptr->next = new;
-}
-
 void delete_from_list(polynomial **list, int position)
 {
     int c = 0;
