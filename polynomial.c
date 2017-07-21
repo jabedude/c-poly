@@ -63,7 +63,7 @@ void poly_print(const polynomial *list) /* TODO: just call poly_to_string */
     }
 }
 
-char *poly_to_string(const polynomial *p) /* TODO: exact number of bytes needed */
+char *poly_to_string(const polynomial *p)
 {
     if (!p) {
         printf("List empty\n");
@@ -77,7 +77,12 @@ char *poly_to_string(const polynomial *p) /* TODO: exact number of bytes needed 
     char *s = (char *) "";
 
     for (int i = 0; i < len; i++) {
-        asprintf(&s, "%s%c%d", s, tmp->coeff > 0 ? '+' : '\0', tmp->coeff);
+        //asprintf(&s, "%s%c%d", s, tmp->coeff > 0 ? '+' : '\0', tmp->coeff);
+        if (tmp->coeff < 0)
+            asprintf(&s, "%s%d", s, tmp->coeff);
+        else
+            asprintf(&s, "%s%c%d", s, '+', tmp->coeff);
+
         if (tmp->exp > 1)
             asprintf(&s, "%sx^%d ", s, tmp->exp);
         else if (tmp->exp == 1)
