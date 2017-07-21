@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "polynomial.h"
 
@@ -166,7 +167,14 @@ void poly_iterate(polynomial *p, void (*transform)(struct term *))
 
 bool poly_equal(const polynomial *a, const polynomial *b)
 {
-    return true;
+    char *a_str = poly_to_string(a);
+    char *b_str = poly_to_string(b);
+
+    int ret = strcmp(a_str, b_str);
+    free(a_str);
+    free(b_str);
+
+    return ret ? false : true;
 }
 
 polynomial *poly_sub(const polynomial *a, const polynomial *b)
