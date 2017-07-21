@@ -165,6 +165,13 @@ void poly_iterate(polynomial *p, void (*transform)(struct term *))
     }
 }
 
+double poly_eval(const polynomial *a, double x)
+{
+    double ret = 0;
+
+    return ret;
+}
+
 bool poly_equal(const polynomial *a, const polynomial *b)
 {
     char *a_str = poly_to_string(a);

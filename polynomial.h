@@ -22,6 +22,7 @@ polynomial *poly_add(const polynomial *a, const polynomial *b);
 polynomial *poly_sub(const polynomial *a, const polynomial *b);
 void poly_iterate(polynomial *p, void (*transform)(struct term *));
 bool poly_equal(const polynomial *a, const polynomial *b);
+double poly_eval(const polynomial *a, double x);
 
 
 void append(polynomial *list, int data);
